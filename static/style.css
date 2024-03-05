@@ -17,7 +17,6 @@ main {
   color: #fff;
   font-family: "Inter", Arial, Helvetica, sans-serif, "Noto Color Emoji";
   font-weight: 400;
-  text-shadow: rgb(77, 81, 86) 0px 0px 0px;
   height: 100%;
 }
 
@@ -147,12 +146,19 @@ form button {
   width: 20%;
   background-color: var(--callout-dark);
   color: #fff;
+  border: none;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 #new-room button {
   flex: 2 20%;
   width: 20%;
   background-color: var(--bg-dark);
+  color: #fff;
+  border: none;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 #status {
