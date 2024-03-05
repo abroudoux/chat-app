@@ -11,13 +11,12 @@ let messageField = newMessageForm.querySelector("#message");
 let usernameField = newMessageForm.querySelector("#username");
 let roomNameField = newRoomForm.querySelector("#name");
 
-var STATE = {
+const STATE = {
   room: "lobby",
   rooms: {},
   connected: false,
 };
 
-// Generate a color from a "hash" of a string. Thanks, internet.
 function hashColor(str) {
   let hash = 0;
   for (var i = 0; i < str.length; i++) {
@@ -28,8 +27,6 @@ function hashColor(str) {
   return `hsl(${hash % 360}, 100%, 70%)`;
 }
 
-// Add a new room `name` and change to it. Returns `true` if the room didn't
-// already exist and false otherwise.
 function addRoom(name) {
   if (STATE[name]) {
     changeRoom(name);
@@ -48,7 +45,6 @@ function addRoom(name) {
   return true;
 }
 
-// Change the current room to `name`, restoring its messages.
 function changeRoom(name) {
   if (STATE.room == name) return;
 
@@ -67,8 +63,6 @@ function changeRoom(name) {
   STATE[name].forEach((data) => addMessage(name, data.username, data.message));
 }
 
-// Add `message` from `username` to `room`. If `push`, then actually store the
-// message. If the current room is `room`, render the message.
 function addMessage(room, username, message, push = false) {
   if (push) {
     STATE[room].push({ username, message });
@@ -83,7 +77,6 @@ function addMessage(room, username, message, push = false) {
   }
 }
 
-// Subscribe to the event source at `uri` with exponential backoff reconnect.
 function subscribe(uri) {
   var retryTime = 1;
 
@@ -119,27 +112,16 @@ function subscribe(uri) {
   connect(uri);
 }
 
-// Set the connection status: `true` for connected, `false` for disconnected.
 function setConnectedStatus(status) {
   STATE.connected = status;
   statusDiv.className = status ? "connected" : "reconnecting";
 }
 
-// Let's go! Initialize the world.
 function init() {
-  // Initialize some rooms.
   addRoom("lobby");
-  addRoom("rocket");
   changeRoom("lobby");
-  addMessage(
-    "lobby",
-    "Rocket",
-    "Hey! Open another browser tab, send a message.",
-    true
-  );
-  addMessage("rocket", "Rocket", "This is another room. Neat, huh?", true);
+  addMessage("lobby", "Rocket", "Welcome to the first lobby!", true);
 
-  // Set up the form handler.
   newMessageForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -158,7 +140,6 @@ function init() {
     }
   });
 
-  // Set up the new room handler.
   newRoomForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -171,7 +152,6 @@ function init() {
     addMessage(room, "Rocket", `Look, your own "${room}" room! Nice.`, true);
   });
 
-  // Subscribe to server-sent events.
   subscribe("/events");
 }
 
