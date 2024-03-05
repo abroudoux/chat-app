@@ -1,4 +1,3 @@
-console.log("Hello World!");
 let roomListDiv = document.getElementById("room-list");
 let messagesDiv = document.getElementById("messages");
 let newMessageForm = document.getElementById("new-message");
@@ -12,7 +11,7 @@ let messageField = newMessageForm.querySelector("#message");
 let usernameField = newMessageForm.querySelector("#username");
 let roomNameField = newRoomForm.querySelector("#name");
 
-let STATE = {
+var STATE = {
   room: "lobby",
   rooms: {},
   connected: false,
@@ -21,7 +20,7 @@ let STATE = {
 // Generate a color from a "hash" of a string. Thanks, internet.
 function hashColor(str) {
   let hash = 0;
-  for (let i = 0; i < str.length; i++) {
+  for (var i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
@@ -37,8 +36,8 @@ function addRoom(name) {
     return false;
   }
 
-  let node = roomTemplate.content.cloneNode(true);
-  let room = node.querySelector(".room");
+  var node = roomTemplate.content.cloneNode(true);
+  var room = node.querySelector(".room");
   room.addEventListener("click", () => changeRoom(name));
   room.textContent = name;
   room.dataset.name = name;
@@ -53,8 +52,8 @@ function addRoom(name) {
 function changeRoom(name) {
   if (STATE.room == name) return;
 
-  let newRoom = roomListDiv.querySelector(`.room[data-name='${name}']`);
-  let oldRoom = roomListDiv.querySelector(`.room[data-name='${STATE.room}']`);
+  var newRoom = roomListDiv.querySelector(`.room[data-name='${name}']`);
+  var oldRoom = roomListDiv.querySelector(`.room[data-name='${STATE.room}']`);
   if (!newRoom || !oldRoom) return;
 
   STATE.room = name;
@@ -76,7 +75,7 @@ function addMessage(room, username, message, push = false) {
   }
 
   if (STATE.room == room) {
-    let node = messageTemplate.content.cloneNode(true);
+    var node = messageTemplate.content.cloneNode(true);
     node.querySelector(".message .username").textContent = username;
     node.querySelector(".message .username").style.color = hashColor(username);
     node.querySelector(".message .text").textContent = message;
@@ -86,7 +85,7 @@ function addMessage(room, username, message, push = false) {
 
 // Subscribe to the event source at `uri` with exponential backoff reconnect.
 function subscribe(uri) {
-  let retryTime = 1;
+  var retryTime = 1;
 
   function connect(uri) {
     const events = new EventSource(uri);

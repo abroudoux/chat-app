@@ -1,15 +1,17 @@
 #[macro_use] extern crate rocket;
 
-use rocket::{tokio::sync::broadcast::{channel, Sender, error::RecvError}, serde::{Serialize, Deserialize}, State, Shutdown, response::stream::{EventStream, Event}};
+#[cfg(test)] mod tests;
+
+use rocket::{State, Shutdown};
+use rocket::fs::{relative, FileServer};
 use rocket::form::Form;
+use rocket::response::stream::{EventStream, Event};
+use rocket::serde::{Serialize, Deserialize};
+use rocket::tokio::sync::broadcast::{channel, Sender, error::RecvError};
 use rocket::tokio::select;
 
-#[get("/world")] 
-fn world() -> &'static str {
-    "Hello, world!"
-}
-
 #[derive(Debug, Clone, FromForm, Serialize, Deserialize)]
+#[cfg_attr(test, derive(PartialEq, UriDisplayQuery))]
 #[serde(crate = "rocket::serde")]
 struct Message {
     #[field(validate = len(..30))]
@@ -19,15 +21,9 @@ struct Message {
     pub message: String,
 }
 
-#[post("/message", data = "<form>")]
-fn post(form: Form<Message>, queue: &State<Sender<Message>>) {
-    let _res = queue.send(form.into_inner());
-}
-
 #[get("/events")]
 async fn events(queue: &State<Sender<Message>>, mut end: Shutdown) -> EventStream![] {
     let mut rx = queue.subscribe();
-
     EventStream! {
         loop {
             let msg = select! {
@@ -41,13 +37,18 @@ async fn events(queue: &State<Sender<Message>>, mut end: Shutdown) -> EventStrea
 
             yield Event::json(&msg);
         }
-    } 
+    }
 }
 
+#[post("/message", data = "<form>")]
+fn post(form: Form<Message>, queue: &State<Sender<Message>>) {
+    let _res = queue.send(form.into_inner());
+}
 
 #[launch]
 fn rocket() -> _ {
     rocket::build()
         .manage(channel::<Message>(1024).0)
-        .mount("/hello", routes![world])
+        .mount("/", routes![post, events])
+        .mount("/", FileServer::from(relative!("static")))
 }
