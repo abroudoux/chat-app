@@ -19,7 +19,7 @@ const STATE = {
 
 function hashColor(str) {
   let hash = 0;
-  for (var i = 0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
     hash = hash & hash;
   }
@@ -33,8 +33,8 @@ function addRoom(name) {
     return false;
   }
 
-  var node = roomTemplate.content.cloneNode(true);
-  var room = node.querySelector(".room");
+  let node = roomTemplate.content.cloneNode(true);
+  let room = node.querySelector(".room");
   room.addEventListener("click", () => changeRoom(name));
   room.textContent = name;
   room.dataset.name = name;
@@ -48,8 +48,8 @@ function addRoom(name) {
 function changeRoom(name) {
   if (STATE.room == name) return;
 
-  var newRoom = roomListDiv.querySelector(`.room[data-name='${name}']`);
-  var oldRoom = roomListDiv.querySelector(`.room[data-name='${STATE.room}']`);
+  let newRoom = roomListDiv.querySelector(`.room[data-name='${name}']`);
+  let oldRoom = roomListDiv.querySelector(`.room[data-name='${STATE.room}']`);
   if (!newRoom || !oldRoom) return;
 
   STATE.room = name;
@@ -69,7 +69,7 @@ function addMessage(room, username, message, push = false) {
   }
 
   if (STATE.room == room) {
-    var node = messageTemplate.content.cloneNode(true);
+    let node = messageTemplate.content.cloneNode(true);
     node.querySelector(".message .username").textContent = username;
     node.querySelector(".message .username").style.color = hashColor(username);
     node.querySelector(".message .text").textContent = message;
@@ -78,7 +78,7 @@ function addMessage(room, username, message, push = false) {
 }
 
 function subscribe(uri) {
-  var retryTime = 1;
+  let retryTime = 1;
 
   function connect(uri) {
     const events = new EventSource(uri);

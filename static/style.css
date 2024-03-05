@@ -1,19 +1,19 @@
 :root {
-  --bg-dark: #242423;
-  --bg-light: #333533;
+  --black: #242423;
+  --grey: #333533;
   --fg-light: #e8eddf;
   --callout: rgb(255, 255, 102);
   --callout-dark: #101010;
 }
 
 * {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 html,
 body,
 main {
-  background-color: var(--bg-dark);
+  background-color: var(--black);
   color: #fff;
   font-family: "Inter", Arial, Helvetica, sans-serif, "Noto Color Emoji";
   font-weight: 400;
@@ -30,11 +30,12 @@ button:hover:not(.active) {
 }
 
 #sidebar {
-  flex: 3 30%;
+  flex: 3 20%;
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
   overflow: auto;
-  background-color: var(--bg-light);
+  background-color: var(--grey);
 }
 
 #room-list {
@@ -47,13 +48,13 @@ button:hover:not(.active) {
 #sidebar button {
   height: 40px;
   margin-bottom: 1px;
-  background: var(--bg-light);
+  background: var(--grey);
   color: #fff;
   overflow: hidden;
 }
 
 #sidebar button.active {
-  background: var(--bg-dark);
+  background: var(--black);
   color: var(--callout);
   font-weight: bold;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.9);
@@ -103,7 +104,7 @@ form {
 form * {
   height: 40px;
   background: var(--fg-light);
-  color: var(--bg-dark);
+  color: var(--black);
 }
 
 input {
@@ -116,14 +117,26 @@ input:focus {
 }
 
 input#username {
-  text-align: right;
+  text-align: left;
   flex: 1 25%;
   width: 25%;
+  padding: 0 10px;
   border-right: 1px solid #303030;
+  color: var(--black);
+
+  &::placeholder {
+    color: var(--grey);
+  }
 }
 
 input#message {
   flex: 10 100%;
+  padding: 0 10px;
+  color: var(--black);
+
+  &::placeholder {
+    color: var(--grey);
+  }
 }
 
 form button {
@@ -147,14 +160,13 @@ form button {
   background-color: var(--callout-dark);
   color: #fff;
   border: none;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  padding: 0 10px;
 }
 
 #new-room button {
   flex: 2 20%;
   width: 20%;
-  background-color: var(--bg-dark);
+  background-color: var(--black);
   color: #fff;
   border: none;
   border-top-right-radius: 5px;
@@ -163,7 +175,7 @@ form button {
 
 #status {
   padding: 5px 10px;
-  text-align: center;
+  text-align: left;
   font-size: 12px;
 }
 

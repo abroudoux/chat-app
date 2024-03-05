@@ -1,20 +1,20 @@
 use std::ops::Range;
+
 use rand::{thread_rng, Rng};
 use rand::distributions::Alphanumeric;
+
 use rocket::http::{ContentType, Status};
 use rocket::http::uri::fmt::{UriDisplay, Query};
 use rocket::local::asynchronous::{Client, LocalResponse};
-use rocket::tokio::sync;
+
+use rocket::tokio::{sync, join};
 use rocket::tokio::io::{BufReader, AsyncBufReadExt};
 use rocket::serde::json;
-
-use crate::routes::{rocket_uri_macro_events, rocket_uri_macro_post}; // Importez les macros générées pour les routes.
-use crate::rocket; // Importez le module rocket.
 
 use super::*;
 
 async fn send_message<'c>(client: &'c Client, message: &Message) -> LocalResponse<'c> {
-    client.post(uri!(rocket_uri_macro_post)) // Utilisez la macro pour la route post.
+    client.post(uri!(post))
         .header(ContentType::Form)
         .body((message as &dyn UriDisplay<Query>).to_string())
         .dispatch()
@@ -64,7 +64,7 @@ async fn messages() {
     };
 
     let receive_messages = async {
-        let response = client.get(uri!(rocket_uri_macro_events)).dispatch().await; // Utilisez la macro pour la route events.
+        let response = client.get(uri!(events)).dispatch().await;
 
         // We have the response stream. Let the receiver know to start sending.
         start_barrier.wait().await;
